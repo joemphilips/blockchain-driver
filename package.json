@@ -51,7 +51,13 @@
   "engines": {
     "node": ">=8.9"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@cycle/dom": "^20.2.0",
+    "@cycle/run": "^4.1.0",
+    "bitcoin-core": "https://github.com/joemphilips/bitcoin-core#typings",
+    "cycle": "^1.0.3",
+    "xstream": "^11.2.0"
+  },
   "devDependencies": {
     "ava": "^1.0.0-beta.3",
     "codecov": "^3.0.0",
