@@ -23,21 +23,13 @@ export const makeTrustedBitcoindDriver = (
     request$: Stream<BitcoindRPCRequest>
   ): MemoryStream<any> => {
     const client = new Client(clientConstructorOpt ? clientConstructorOpt : {});
-    const response$$ = xs.create();
 
     // TODO: buffer stream and send request with real batch
-    request$.subscribe({
-      next: outgoing => {
-        /* tslint:disable-next-line:no-expression-statement */
-        const response$ = xs.fromPromise(client.command([outgoing]));
-        /* tslint:disable-next-line:no-expression-statement */
-        response$$.shamefullySendNext(response$);
-      },
-      error: () => {},
-      complete: () => {}
-    });
+    const response$ = request$
+      .map(command => xs.fromPromise(client.command([command])))
+      .flatten();
 
-    return adapt(response$$);
+    return adapt(response$);
   };
 
   return trustedBitcoindDriver;
