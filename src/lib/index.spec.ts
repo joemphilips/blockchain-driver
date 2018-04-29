@@ -39,7 +39,7 @@ test('ping', async t => {
   await sleep(200);
 });
 
-test.skip('handle error when failed to connect', t => {
+test('handle error when failed to connect', async t => {
   t.plan(1);
   const main = (_: Sources): Sinks => {
     return {
@@ -53,6 +53,14 @@ test.skip('handle error when failed to connect', t => {
     port: 18332
   });
 
-  const { run } = Cycle.setup(main, { Blockchain: driver });
+  const { run, sources } = Cycle.setup(main, { Blockchain: driver });
+  sources.Blockchain.addListener({
+    next: _ =>
+      t.fail(
+        'next shuold not be called when trying to send message to an unconnectable blockchain'
+      ),
+    error: e => t.is(e.toString(), 'RpcError: 401 Unauthorized')
+  });
   run();
+  await sleep(200);
 });
