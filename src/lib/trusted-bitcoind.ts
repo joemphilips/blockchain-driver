@@ -27,11 +27,11 @@ export const makeTrustedBitcoindDriver = (
 
     // TODO: buffer stream and send request with real batch
     request$.subscribe({
-      next: async outgoing => {
+      next: outgoing => {
         /* tslint:disable-next-line:no-expression-statement */
         const response$ = xs.fromPromise(client.command([outgoing]));
         /* tslint:disable-next-line:no-expression-statement */
-        response$.map(response$$.shamefullySendNext);
+        response$$.shamefullySendNext(response$);
       },
       error: () => {},
       complete: () => {}

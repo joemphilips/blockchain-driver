@@ -10,8 +10,10 @@ interface Sources {
 interface Sinks {
   readonly Blockchain: Stream<any>;
 }
+const sleep = (msec: number) =>
+  new Promise(resolve => setTimeout(resolve, msec));
 
-test('ping', t => {
+test('ping', async t => {
   t.plan(1);
   const main = (_: Sources): Sinks => {
     return {
@@ -27,13 +29,14 @@ test('ping', t => {
   const { run, sources } = Cycle.setup(main, { Blockchain: driver });
 
   sources.Blockchain.addListener({
-    next: _ => t.pass('ping successed'),
+    next: _ => t.true(true, 'ping successed'),
     /* tslint:disable-next-line */
     error: e => t.log(e),
     complete: () => t.log('blockchain driver has completed')
   });
 
   run();
+  await sleep(200);
 });
 
 test.skip('handle error when failed to connect', t => {
