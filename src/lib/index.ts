@@ -2,7 +2,7 @@
 /* tslint:disable:no-empty */
 import { adapt } from '@cycle/run/lib/adapt';
 import Client, { BatchOption, ClientConstructorOption } from 'bitcoin-core';
-import xs, { Stream } from 'xstream';
+import xs, { MemoryStream, Stream } from 'xstream';
 
 export interface BlockchainAgentOptionBase {
   readonly url: string;
@@ -19,7 +19,9 @@ export interface BitcoindAgentOption extends BlockchainAgentOptionBase {
 export const makeTrustedBitcoindDriver = (
   clientConstructorOpt?: ClientConstructorOption
 ) => {
-  const trustedBitcoindDriver = (request$: Stream<BitcoindRPCRequest>) => {
+  const trustedBitcoindDriver = (
+    request$: Stream<BitcoindRPCRequest>
+  ): MemoryStream<any> => {
     const client = new Client(clientConstructorOpt ? clientConstructorOpt : {});
     const response$$ = xs.create();
 
