@@ -19,6 +19,9 @@
     "test": "run-s build test:*",
     "test:lint": "tslint --project . && prettier \"src/**/*.ts\" --list-different",
     "test:unit": "nyc --silent ava",
+    "test:build": "run-p clean test:docker && tsc -p tsconfig.test.json",
+    "test:docker": "docker-compose down && docker-compose up -d && run-s test:docker-generate",
+    "test:docker-generate": "docker exec -it $(docker-compose ps -q) bitcoin-cli -rpcuser=foo -rpcpassword=bar -rpcport=18332 -regtest generate 102",
     "test:nsp": "nsp check",
     "watch": "run-s clean build:main && run-p \"build:main -- -w\" \"test:unit -- --watch\"",
     "cov": "run-s build test:unit cov:html && opn coverage/index.html",
@@ -56,6 +59,7 @@
     "@cycle/run": "^4.1.0",
     "bitcoin-core": "https://github.com/joemphilips/bitcoin-core#typings",
     "cycle": "^1.0.3",
+    "rxjs": "^6.0.0",
     "xstream": "^11.2.0"
   },
   "devDependencies": {

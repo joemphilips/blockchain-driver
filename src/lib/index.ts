@@ -1,27 +1,42 @@
-import Client from 'bitcoin-core';
-import xs ,{Stream} from 'xstream'
+/* tslint:disable:no-submodule-imports */
+/* tslint:disable:no-empty */
+import { adapt } from '@cycle/run/lib/adapt';
+import Client, { BatchOption, ClientConstructorOption } from 'bitcoin-core';
+import xs, { Stream } from 'xstream';
 
 export interface BlockchainAgentOptionBase {
-    readonly url: string
+  readonly url: string;
 }
+
+export type BitcoindRPCRequest = BatchOption;
 
 export interface BitcoindAgentOption extends BlockchainAgentOptionBase {
-    readonly port: number,
-    readonly password: string,
+  readonly port: number;
+  readonly password: string;
 }
 
-export const makeTrustedBitcoindDriver = (agentOption: BitcoindAgentOption) => {
-  const trustedBitcoindDriver = (request$: Stream<BitcoindAgentOption>) => {
-    const client = new Client();
-    request$.addListener({
-      next: outgoing => {
+// TODO: Specify type for sink correctly
+export const makeTrustedBitcoindDriver = (
+  clientConstructorOpt?: ClientConstructorOption
+) => {
+  const trustedBitcoindDriver = (request$: Stream<BitcoindRPCRequest>) => {
+    const client = new Client(clientConstructorOpt ? clientConstructorOpt : {});
+    const response$$ = xs.create();
+
+    // TODO: buffer stream and send request with real batch
+    request$.subscribe({
+      next: async outgoing => {
         /* tslint:disable-next-line:no-expression-statement */
-        client.ping();
-      }
+        const response$ = xs.fromPromise(client.command([outgoing]));
+        /* tslint:disable-next-line:no-expression-statement */
+        response$$.shamefullySendNext(response$);
+      },
+      error: () => {},
+      complete: () => {}
     });
-  };
-};
 
-export const makeTrustedBcoinDriver = (sources) => {
-  
-}
+    return adapt(response$$);
+  };
+
+  return trustedBitcoindDriver;
+};

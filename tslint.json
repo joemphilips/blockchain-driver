@@ -6,6 +6,10 @@
     // waiting on https://github.com/palantir/tslint/pull/3708
     "no-implicit-dependencies": [true, "dev"],
 
+    // Disabling default rules.
+    "object-literal-sort-keys": false,
+    "no-expression-statement": false,
+
     /* tslint-immutable rules */
     // Recommended built-in rules
     "no-var-keyword": true,
@@ -24,10 +28,6 @@
     "no-this": true,
     "no-class": true,
     "no-mixed-interface": true,
-    "no-expression-statement": [
-      true,
-      { "ignore-prefix": ["console.", "process.exit"] }
-    ],
     "no-if-statement": true
     /* end tslint-immutable rules */
   }
