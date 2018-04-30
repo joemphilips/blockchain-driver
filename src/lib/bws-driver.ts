@@ -27,8 +27,10 @@ export const makeBWSDriver = ({ url }: BWSClientOption) => {
     request$: Stream<BWSRequest>
   ): MemoryStream<BWSResponse> => {
     const cli = new Client({ baseUrl: url + '/bws/api', timeout: 3000 });
-    request$.map(r => xs.fromPromise(cli[r.method](r.options))).flatten();
-    return adapt(request$);
+    const response$ = request$
+      .map(r => xs.fromPromise(cli[r.method](r.options)))
+      .flatten();
+    return adapt(response$);
   };
   return BWSDriver;
 };
