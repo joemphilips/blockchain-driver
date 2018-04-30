@@ -7,6 +7,7 @@ const sleep = (msec: number) =>
   new Promise(resolve => setTimeout(resolve, msec));
 
 test('bws driver', async t => {
+  t.plan(1);
   const main = _ => {
     return {
       Blockchain: xs.of({ method: 'getVersion' })
@@ -20,9 +21,11 @@ test('bws driver', async t => {
   const { run, sources } = setup(main, { Blockchain: driver });
   sources.Blockchain.addListener({
     next: v =>
-      t.is(v, 'bws-2.4.0', 'can query the service version to bws server')
+      t.is(v, 'bws-2.4.0', 'can query the service version to bws server'),
+    error: e => t.fail(e),
+    complete: () => t.fail('complete shuold not be called')
   });
 
   run();
-  await sleep(200);
+  await sleep(20000);
 });
