@@ -1,6 +1,7 @@
 import { adapt } from '@cycle/run/lib/adapt';
 import { default as OriginalClient } from 'bitcore-wallet-client';
 import { promisifyAll } from 'bluebird';
+import * as util from 'util';
 import xs, { MemoryStream, Stream } from 'xstream';
 import { BlockchainAgentOptionBase } from './common';
 
@@ -28,7 +29,7 @@ export const makeBWSDriver = ({ url }: BWSClientOption) => {
   ): MemoryStream<BWSResponse> => {
     const cli = new Client({ baseUrl: url + '/bws/api', timeout: 3000 });
     const response$ = request$
-      .map(r => xs.fromPromise(cli[r.method](r.options)))
+      .map(r => xs.fromPromise(util.promisify(cli[r.method]).bind(cli)()))
       .flatten();
     return adapt(response$);
   };
