@@ -26,12 +26,26 @@ services:
       -server
       -zmqpubrawblock='tcp://127.0.0.1:288332'
       -zmqpubrawtx='tcp://127.0.0.1:288332'
-  bcoin:
-    image: purse/bcoin
+      # bcoin:
+      # image: purse/bcoin
+      # restart: unless-stopped
+      # env_file:
+      # - ./bcoin.env
+      # ports:
+      # - "48444:48444"
+      # - "48332:48332"
+      # - "48334:48334"
+  db:
+    image: mongo:latest
     restart: unless-stopped
-    env_file:
-      - ./bcoin.env
     ports:
-      - "48444:48444"
-      - "48332:48332"
-      - "48334:48334"
+      - "27017:27017"
+  bws:
+    image: joemphilips/bws
+    links:
+      - db
+    ports:
+      - "3232:3232"
+      - "3231:3231"
+      - "3380:3380" # for message notification
+      - "443:443"
