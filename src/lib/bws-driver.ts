@@ -1,6 +1,5 @@
 import { adapt } from '@cycle/run/lib/adapt';
-import { default as OriginalClient } from 'bitcore-wallet-client';
-import { promisifyAll } from 'bluebird';
+import { default as Client } from 'bitcore-wallet-client';
 import * as util from 'util';
 import xs, { MemoryStream, Stream } from 'xstream';
 import { BlockchainAgentOptionBase } from './common';
@@ -12,7 +11,7 @@ export interface BWSClientOption extends BlockchainAgentOptionBase {
 }
 
 export interface BWSRequest {
-  readonly method: keyof OriginalClient;
+  readonly method: keyof Client;
   readonly options?: ReadonlyArray<any>;
 }
 
@@ -21,9 +20,6 @@ export interface BWSResponse {
 }
 
 export const makeBWSDriver = ({ url }: BWSClientOption) => {
-  /* tslint:disable-next-line */
-  console.log(`going to promisify ${OriginalClient}`);
-  const Client = promisifyAll(OriginalClient);
   const BWSDriver = (
     request$: Stream<BWSRequest>
   ): MemoryStream<BWSResponse> => {
