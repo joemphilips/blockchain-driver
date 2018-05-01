@@ -19,13 +19,34 @@ export interface BWSResponse {
   readonly [key: string]: any;
 }
 
+/**
+ * NOTE: You must first call following method to get authenticated to the service
+ * - seedFromRandomWithMnemonic
+ * - seedFromExtendedPrivateKey
+ * - seedFromMnemonic
+ * - seedFromExtendedPublicKey
+ * - seedFromRandom
+ * - import
+ * - importFromExtendedPublicKey
+ * - importFromExtendedPrivateKey
+ *
+ * @param url ... the url to which you want to query
+ */
 export const makeBWSDriver = ({ url }: BWSClientOption) => {
   const BWSDriver = (
     request$: Stream<BWSRequest>
   ): MemoryStream<BWSResponse> => {
     const cli = new Client({ baseUrl: url + '/bws/api', timeout: 3000 });
     const response$ = request$
-      .map(r => xs.fromPromise(util.promisify(cli[r.method]).bind(cli)()))
+      /* tslint:disable-next-line */
+      .debug(r => console.log(`going to call ${r.method} with ${r.options}`))
+      .map(r =>
+        xs.fromPromise(
+          r.options
+            ? util.promisify(cli[r.method]).bind(cli)(...r.options)
+            : util.promisify(cli[r.method]).bind(cli)()
+        )
+      )
       .flatten();
     return adapt(response$);
   };
