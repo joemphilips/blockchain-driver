@@ -82,4 +82,4 @@ declare class Client extends EventEmitter {
   getStatus(): getStatusResult;
 }
 
-export default Client
+export default Client;
