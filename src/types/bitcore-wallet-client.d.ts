@@ -72,7 +72,7 @@ export interface getStatusResult {
   balance: BalanceInfo;
 }
 
-export declare class Client extends EventEmitter {
+declare class Client extends EventEmitter {
   constructor(opts: ClientConstructorOption);
 
   initialize(opts, cb): void;
@@ -81,3 +81,5 @@ export declare class Client extends EventEmitter {
 
   getStatus(): getStatusResult;
 }
+
+export default Client
