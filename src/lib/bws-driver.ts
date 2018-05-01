@@ -1,5 +1,5 @@
 import { adapt } from '@cycle/run/lib/adapt';
-import { default as Client } from 'bitcore-wallet-client';
+import Client from 'bitcore-wallet-client';
 import * as util from 'util';
 import xs, { MemoryStream, Stream } from 'xstream';
 import { BlockchainAgentOptionBase } from './common';
@@ -20,7 +20,7 @@ export interface BWSResponse {
 }
 
 /**
- * NOTE: You must first call following method to get authenticated to the service
+ * NOTE: You must first call one of the following methods to get authenticated to the service
  * - seedFromRandomWithMnemonic
  * - seedFromExtendedPrivateKey
  * - seedFromMnemonic
