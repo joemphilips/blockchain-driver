@@ -1,11 +1,21 @@
 # blockchain-driver
 
-Cycle.js driver for following blockchain
+Cycle.js driver for following blockchain clients
 
-* bitcoind
-* bcoin
-* bitcore-wallet-service (bws)
+* [bitcoind](https://github.com/bitcoin/bitcoin)
+* [bcoin](https://github.com/bcoin-org/bcoin) ... WIP
+* [bitcore-wallet-service (bws)](https://github.com/bitpay/bitcore-wallet-service) 
 
+## Example
+
+```ts
+import { makeTrustedBitcoindDriver } from 'blockchain-driver'
+import { run } from '@cycle/run'
+
+const blockchainDriver = makeTrustedBitcoindDriver({username: "foo", password: "bar", port: 18332})
+
+run(main, {Blockchain: blockchainDriver})
+```
 
 ## for developer
 
