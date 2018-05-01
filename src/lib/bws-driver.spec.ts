@@ -13,6 +13,10 @@ interface BWSTestSource {
   readonly Blockchain: Stream<BWSResponse>;
 }
 
+const isWalletSecret = (r: any): boolean => {
+  return typeof r === 'string' && r.substring(r.length - 3, r.length) === 'btc';
+};
+
 test('bws driver can getVersion', async t => {
   t.plan(1);
   const main = _ => {
@@ -73,7 +77,7 @@ test('bws driver can createWallet', async t => {
   });
 
   run();
-  await sleep(10000);
+  await sleep(1000);
 });
 
 test('bws driver can getNotification with auth', async t => {
@@ -91,7 +95,7 @@ test('bws driver can getNotification with auth', async t => {
         start: async l => {
           l.next({ method: 'createWallet', options: createWalletOpts });
           await sleep(3000);
-          l.next({ method: 'openWallet' });
+          l.next({ method: 'getStatus' });
         },
         /* tslint:disable-next-line:no-empty */
         stop: () => {}
@@ -104,11 +108,18 @@ test('bws driver can getNotification with auth', async t => {
   });
 
   const { run, sources } = setup(main, { Blockchain: driver });
-  sources.Blockchain.addListener({
-    next: v => t.fail(`result from getNotifications was ${v}`),
-    error: e => t.fail(e),
-    complete: () => t.fail('complete shuold not be called')
-  });
+  /* tslint:disable-next-line */
+  sources.Blockchain.debug(r => console.log(`received ${r} from bws driver`))
+    .filter(r => r && !isWalletSecret(r)) // filter response for createWallet
+    .addListener({
+      next: v =>
+        t.true(
+          isWalletSecret(v.wallet.secret),
+          'getStatus must return the wallet info'
+        ),
+      error: e => t.fail(e),
+      complete: () => t.fail('complete shuold not be called')
+    });
 
   run();
   await sleep(4000);
