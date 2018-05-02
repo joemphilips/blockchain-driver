@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.14"></a>
+## [1.0.14](https://github.com/joemphilips/blockchain-driver/compare/v1.0.12...v1.0.14) (2018-05-02)
+
+
+
 <a name="1.0.12"></a>
 ## [1.0.12](https://github.com/joemphilips/blockchain-driver/compare/v1.0.10...v1.0.12) (2018-05-02)
 
