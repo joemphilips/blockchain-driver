@@ -17,7 +17,7 @@ const blockchainDriver = makeTrustedBitcoindDriver({username: "foo", password: "
 run(main, {Blockchain: blockchainDriver})
 ```
 
-## for developer
+## contributing
 
 To run test, you must first run `docker-compose up`
 bws test suite creates new wallet each time, and the bws has a cap for its wallet number able to create from same ip,
