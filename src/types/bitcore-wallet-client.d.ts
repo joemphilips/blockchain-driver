@@ -1,9 +1,8 @@
 import { EventEmitter } from 'events';
-import * as SA from 'superagent';
 
 export interface ClientConstructorOption {
   baseUrl?: string;
-  request?: SA.Request;
+  request?: any // TODO: this should be `Request` in superagent
   doNotVerfyPayPro?: boolean;
   timeout?: number;
   logLevel?: string;
@@ -12,6 +11,8 @@ export interface ClientConstructorOption {
 
 export type WalletID = string;
 export type UUID = string;
+
+export type Callback = (...args: any[]) => void
 
 export type CreateWalletOpts = [
   string,
@@ -72,10 +73,27 @@ export interface getStatusResult {
   balance: BalanceInfo;
 }
 
-declare class Client extends EventEmitter {
-  constructor(opts: ClientConstructorOption);
+export interface initNotificationOpts {
+  notificationIntervalSeconds: number
+}
 
-  initialize(opts, cb): void;
+export interface NetworkOpts {
+  coin: "btc" | "bch";
+  network: "livenet" | "testenet"
+}
+
+declare class Client extends EventEmitter {
+  constructor(opts: ClientConstructorOption | null);
+
+  initNotifications(opts, cb: Callback): void
+
+  initialize(opts: initNotificationOpts | null, cb: Callback): void;
+
+  dispose(cb: Callback): void;
+
+  seedFromRandom(opts: NetworkOpts | null): void;
+
+  validateKeyDerivation(opts: {passphrase: string, skipDeviceValidation: boolean})
 
   createWallet(opts: CreateWalletOpts): WalletID;
 
