@@ -1,7 +1,7 @@
 import { setup } from '@cycle/run';
 import test from 'ava';
 import xs, { Stream } from 'xstream';
-import { BWSRequest, BWSResponse, makeBWSDriver } from '.';
+import { BWSMethodName, BWSRequest, BWSResponse, makeBWSDriver } from '.';
 
 const sleep = (msec: number) =>
   new Promise(resolve => setTimeout(resolve, msec));
@@ -56,7 +56,10 @@ test('bws driver can createWallet', async t => {
       { network: 'testnet' }
     ];
     return {
-      Blockchain: xs.of({ method: 'createWallet', options: createWalletOpts })
+      Blockchain: xs.of({
+        method: 'createWallet' as BWSMethodName,
+        options: createWalletOpts
+      })
     };
   };
 

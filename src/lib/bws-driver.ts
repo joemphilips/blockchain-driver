@@ -10,8 +10,9 @@ export interface BWSClientOption extends BlockchainAgentOptionBase {
   readonly apiBase?: string;
 }
 
+export type BWSMethodName = keyof Client;
 export interface BWSRequest {
-  readonly method: keyof Client;
+  readonly method: BWSMethodName;
   readonly options?: ReadonlyArray<any>;
 }
 
