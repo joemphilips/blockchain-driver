@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import * as SA from 'superagent';
+/* tslint:disable */
 
 export interface ClientConstructorOption {
   baseUrl?: string;
