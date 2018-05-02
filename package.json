@@ -57,7 +57,7 @@
     "@cycle/dom": "^20.2.0",
     "@cycle/run": "^4.1.0",
     "bitcoin-core": "https://github.com/joemphilips/bitcoin-core#typings",
-    "bitcore-wallet-client": "^6.7.4",
+    "bitcore-wallet-client": "https://github.com/joemphilips/bitcore-wallet-client#typings",
     "blockchain-driver": "^1.0.8",
     "bunyan": "^1.8.12",
     "bunyan-prettystream": "^0.1.3",
