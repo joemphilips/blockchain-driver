@@ -9,6 +9,7 @@
     // Disabling default rules.
     "object-literal-sort-keys": false,
     "no-expression-statement": false,
+    "no-submodule-imports": false,
 
     /* tslint-immutable rules */
     // Recommended built-in rules

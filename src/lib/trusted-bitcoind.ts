@@ -3,10 +3,8 @@
 import { adapt } from '@cycle/run/lib/adapt';
 import Client, { BatchOption, ClientConstructorOption } from 'bitcoin-core';
 import xs, { MemoryStream, Stream } from 'xstream';
-
-export interface BlockchainAgentOptionBase {
-  readonly url: string;
-}
+import buffer from 'xstream/extra/buffer';
+import { BlockchainAgentOptionBase } from './common';
 
 export type BitcoindRPCRequest = BatchOption;
 
@@ -19,6 +17,7 @@ export interface BitcoindAgentOption extends BlockchainAgentOptionBase {
 export const makeTrustedBitcoindDriver = (
   clientConstructorOpt?: ClientConstructorOption
 ) => {
+  const separator = xs.periodic(100);
   const trustedBitcoindDriver = (
     request$: Stream<BitcoindRPCRequest>
   ): MemoryStream<any> => {
@@ -26,7 +25,8 @@ export const makeTrustedBitcoindDriver = (
 
     // TODO: buffer stream and send request with real batch
     const response$ = request$
-      .map(command => xs.fromPromise(client.command([command])))
+      .compose(buffer(separator))
+      .map(command => xs.fromPromise(client.command(command)))
       .flatten();
 
     return adapt(response$);
