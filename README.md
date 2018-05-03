@@ -19,6 +19,9 @@ run(main, {Blockchain: blockchainDriver})
 
 ## contributing
 
-To run test, you must first run `docker-compose up`
-bws test suite creates new wallet each time, and the bws has a cap for its wallet number able to create from same ip,
+To run integration test, you must first run `docker-compose up` and 
+`yarn integration`
+
+bws test suite creates new wallet (and puts its pubkey onto the server) each time it runs.
+But since a bws has a cap for its wallet number able to create from same ip,
 you may have to re-run docker by `docker-compose down && docker-compose up`
