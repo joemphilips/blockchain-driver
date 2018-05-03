@@ -1,6 +1,23 @@
 # https://circleci.com/docs/2.0/language-javascript/
 version: 2
 jobs:
+  "start-blockchains":
+    docker: true
+    steps:
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - setup_remote_docker
+      - run:
+          name: Start container and verify it's working
+          command: |
+            set -x
+            docker-compose up -d
+            docker run --network container:contacts \
+            appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test
   "node-8":
     docker:
       - image: circleci/node:8
@@ -44,5 +61,10 @@ workflows:
   version: 2
   build:
     jobs:
-      - "node-8"
-      - "node-latest"
+      - "start-blockchains"
+      - "node-8":
+          requires:
+            - "start-blockchains"
+      - "node-latest":
+          requires:
+            - "start-blockchains"
