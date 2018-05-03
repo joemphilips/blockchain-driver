@@ -1,5 +1,27 @@
 # https://circleci.com/docs/2.0/language-javascript/
 version: 2
+anchors:
+  - prepare_docker_compose: &prepare_docker_compose
+    - run:
+        name: Install Docker Compose
+        command: |
+          set -x
+          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
+    - setup_remote_docker
+  - prepare_blockchain: &prepare_blockchain
+    - run:
+        name: Start container and verify it's working
+        command: |
+          set -x
+          docker-compose up -d
+          # To check service runs correctly, we start another container with curl in the same network, this way we have
+          # all exposed ports from `contacts` available on `localhost` in this new container
+          docker run --network container:bws \
+            appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:3232/bws/api/v1/version
+          docker run --network container:bitcoind \
+            appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:18332/rest/chaininfo.json
 jobs:
   "node-8":
     docker:
@@ -7,6 +29,8 @@ jobs:
     working_directory: ~/typescript-starter
     steps:
       - checkout
+      <<: *prepare_docker_compose
+      <<: *prepare_blockchain
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -27,6 +51,8 @@ jobs:
     working_directory: ~/typescript-starter
     steps:
       - checkout
+      <<: *prepare_docker_compose
+      <<: *prepare_blockchain
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
@@ -39,7 +65,6 @@ jobs:
       - run: npm test
       - run: npx nyc report --reporter=lcov | npx codecov
       - run: npm run cov:check
-
 workflows:
   version: 2
   build:
