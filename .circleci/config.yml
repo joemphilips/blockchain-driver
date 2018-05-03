@@ -29,14 +29,29 @@ jobs:
     working_directory: ~/typescript-starter
     steps:
       - checkout
-      <<: *prepare_docker_compose
-      <<: *prepare_blockchain
       # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
+      - run:
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: Start container and verify it's working
+          command: |
+            set -x
+            docker-compose up -d
+            # To check service runs correctly, we start another container with curl in the same network, this way we have
+            # all exposed ports from `contacts` available on `localhost` in this new container
+            docker run --network container:bws \
+              appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:3232/bws/api/v1/version
+            docker run --network container:bitcoind \
+              appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:18332/rest/chaininfo.json
       - run: npm install
       - save_cache:
           paths:
