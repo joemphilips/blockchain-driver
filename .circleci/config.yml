@@ -51,12 +51,12 @@ jobs:
     working_directory: ~/typescript-starter
     steps:
       - checkout
-        <<: *prepare_docker_compose
-        <<: *prepare_blockchain
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies-
+        <<: *prepare_docker_compose
+        <<: *prepare_blockchain
       - run: npm install
       - save_cache:
           paths:
