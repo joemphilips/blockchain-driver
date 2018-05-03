@@ -51,8 +51,8 @@ jobs:
     working_directory: ~/typescript-starter
     steps:
       - checkout
-      <<: *prepare_docker_compose
-      <<: *prepare_blockchain
+        <<: *prepare_docker_compose
+        <<: *prepare_blockchain
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
