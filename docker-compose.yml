@@ -2,6 +2,7 @@ version: '3'
 services:
   bitcoind:
     image: seegno/bitcoind
+    container_name: bitcoind
     restart: unless-stopped
     ports:
       ## Comment these if they conflict with something else you're running.
@@ -37,11 +38,13 @@ services:
       # - "48334:48334"
   db:
     image: mongo:latest
+    container_name: db
     restart: unless-stopped
     ports:
       - "27017:27017"
   bws:
     image: joemphilips/bws
+    container_name: bws
     links:
       - db
     ports:
