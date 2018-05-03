@@ -17,9 +17,9 @@ references:
       # To check service runs correctly, we start another container with curl in the same network, this way we have
       # all exposed ports from `contacts` available on `localhost` in this new container
       docker run --network container:bws \
-        appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:3232/bws/api/v1/version
+        appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3232/bws/api/v1/version
       docker run --network container:bitcoind \
-        appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:18332/rest/chaininfo.json
+        appropriate/curl --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:18332/rest/chaininfo.json
 
 jobs:
   "node-8":
