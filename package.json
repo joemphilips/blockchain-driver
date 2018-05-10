@@ -1,6 +1,6 @@
 {
   "name": "blockchain-driver",
-  "version": "1.0.22",
+  "version": "0.0.0",
   "description": "a cycle.js driver for the bitcoin blockchain",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
