@@ -1,5 +1,7 @@
 # blockchain-driver
 
+# This repo is deprecated: it is now moved to [here](https://github.com/joemphilips/cycle-walletts)
+
 Cycle.js driver for following blockchain clients
 
 * [bitcoind](https://github.com/bitcoin/bitcoin)
